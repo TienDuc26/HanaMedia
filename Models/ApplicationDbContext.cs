@@ -459,6 +459,9 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.Role, "idx_users_role");
 
+            entity.Property(e => e.AccessFailedCount)
+                .HasDefaultValue(0)
+                .HasColumnName("access_failed_count");
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -468,6 +471,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("email");
+            entity.Property(e => e.LockoutEndUtc)
+                .HasColumnType("datetime")
+                .HasColumnName("lockout_end_utc");
             entity.Property(e => e.PasswordHash)
                 .HasMaxLength(255)
                 .IsUnicode(false)

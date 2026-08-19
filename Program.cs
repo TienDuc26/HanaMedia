@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using HanaMedia.Middlewares;
 using HanaMedia.Models;
 using HanaMedia.Services.Accounts;
 using HanaMedia.Services.Auditing;
@@ -32,6 +33,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 
+builder.Services.Configure<NetworkAccessOptions>(options =>
+{
+    options.AllowedCidrs = builder.Configuration
+        .GetSection("IpWhitelist:AllowedCidrs")
+        .Get<string[]>() ?? Array.Empty<string>();
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +54,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseMiddleware<IpWhitelistMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

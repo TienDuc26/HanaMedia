@@ -22,6 +22,8 @@ CREATE TABLE users (
     role VARCHAR(20) NOT NULL CONSTRAINT chk_user_role CHECK (role IN ('giam_doc', 'admin_it', 'ql_hcns', 'nv_hcns', 'ql_booking', 'nv_booking', 'ql_y_tuong', 'nv_y_tuong')),
     status VARCHAR(20) NOT NULL DEFAULT 'active' CONSTRAINT chk_user_status CHECK (status IN ('active', 'locked')),
     security_stamp UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_users_security_stamp DEFAULT (NEWID()),
+    access_failed_count INT NOT NULL CONSTRAINT DF_users_access_failed_count DEFAULT (0),
+    lockout_end_utc DATETIME NULL,
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE()
 );
