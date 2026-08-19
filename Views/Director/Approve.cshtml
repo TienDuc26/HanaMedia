@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -63,6 +63,7 @@
     <a href="/Director/BookingCampaign" class="nav-item"><i class="ti ti-star"></i>Booking / KOL</a>
     <a href="/Director/Idea" class="nav-item"><i class="ti ti-bulb"></i>Ý tưởng &amp; Chiến dịch</a>
     <a href="/Director/Approve" class="nav-item active"><i class="ti ti-checklist"></i>Phê duyệt</a>
+    <a href="/Director/SignContract" class="nav-item"><i class="ti ti-file-signature"></i>Ký hợp đồng</a>
 
     <div class="nav-section">Quản trị</div>
     <a href="/Director/Config" class="nav-item"><i class="ti ti-settings"></i>Cấu hình nghiệp vụ</a>
@@ -89,10 +90,10 @@
 
     <div class="card">
       <div class="tab-headers">
-        <div class="tab-header active" onclick="switchFilter(event, 'all')">Tất cả (4)</div>
+        <div class="tab-header active" onclick="switchFilter(event, 'all')">Tất cả (6)</div>
         <div class="tab-header" onclick="switchFilter(event, 'salary')">Đề xuất lương (1)</div>
         <div class="tab-header" onclick="switchFilter(event, 'offboard')">Nghỉ việc (1)</div>
-        <div class="tab-header" onclick="switchFilter(event, 'booking')">Booking &amp; Campaign (1)</div>
+        <div class="tab-header" onclick="switchFilter(event, 'booking')">Booking (3)</div>
         <div class="tab-header" onclick="switchFilter(event, 'idea')">Ý tưởng (1)</div>
       </div>
 
@@ -128,7 +129,17 @@
             </td>
           </tr>
           <tr data-type="booking">
-            <td><span class="approval-tag tag-booking">Booking</span></td>
+            <td><span class="approval-tag tag-booking">Đơn Booking</span></td>
+            <td><strong>Đơn phê duyệt Booking — Client Cocoon</strong><br><span style="color:var(--muted); font-size:12px;">Campaign: Glow Up Your Skin. Giá trị: 15,000,000đ, Chi phí: 6,000,000đ. KOL: Nguyễn Anh T.</span></td>
+            <td>NV Booking (Phạm Thu Hà)</td>
+            <td>3 giờ trước</td>
+            <td style="text-align: right;">
+              <button class="btn-mini approve" onclick="handleAction(this, 'duyệt đơn booking Cocoon')">Duyệt</button>
+              <button class="btn-mini reject" onclick="handleAction(this, 'từ chối đơn booking Cocoon')">Từ chối</button>
+            </td>
+          </tr>
+          <tr data-type="booking">
+            <td><span class="approval-tag tag-booking">Đơn Booking</span></td>
             <td><strong>Booking KOL lớn — Client Vinamilk, 480 triệu</strong><br><span style="color:var(--muted); font-size:12px;">KOL Đặng Ngọc L, chi phí 220,000,000đ, doanh thu dự kiến 480,000,000đ.</span></td>
             <td>QL Booking (Nguyễn Anh Tuấn)</td>
             <td>Hôm qua</td>
@@ -143,6 +154,7 @@
             <td>QL Ý tưởng (Trần Thanh Hải)</td>
             <td>2 ngày trước</td>
             <td style="text-align: right;">
+              <button class="btn-mini" onclick="openIdeaFeedbackModal()"><i class="ti ti-message-dots"></i> Feedback</button>
               <button class="btn-mini approve" onclick="handleAction(this, 'duyệt ý tưởng Tết Sum Vầy')">Duyệt</button>
               <button class="btn-mini reject" onclick="handleAction(this, 'từ chối ý tưởng Tết Sum Vầy')">Từ chối</button>
             </td>
@@ -153,6 +165,97 @@
 
     <footer>HanaMedia · Dashboard Giám đốc — dữ liệu minh họa cho mục đích thiết kế giao diện</footer>
   </main>
+</div>
+
+<!-- MODAL FEEDBACK & CHỈNH SỬA Ý TƯỞNG -->
+<div class="modal-backdrop" id="ideaFeedbackModal">
+  <div class="modal-card" style="width: 800px; max-width: 95%;">
+    <div class="modal-header">
+      <div class="modal-title">Feedback &amp; Chỉnh sửa Ý tưởng</div>
+      <button class="modal-close" onclick="closeModal('ideaFeedbackModal')">&times;</button>
+    </div>
+    <div class="modal-body" style="max-height: 520px; overflow-y: auto; padding-right: 8px;">
+      <div style="background: var(--blue-50); border: 1px solid var(--blue-100); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div>
+            <div class="info-label">Tên ý tưởng</div>
+            <div class="info-val" style="font-weight: 600; color: var(--navy);">Campaign "Tết Sum Vầy"</div>
+          </div>
+          <div>
+            <div class="info-label">Người gửi</div>
+            <div class="info-val">QL Ý tưởng (Trần Thanh Hải)</div>
+          </div>
+          <div>
+            <div class="info-label">Client</div>
+            <div class="info-val">Vinamilk</div>
+          </div>
+          <div>
+            <div class="info-label">Campaign</div>
+            <div class="info-val">Tết Sum Vầy 2027</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <div class="info-label">Insight</div>
+        <div style="padding: 10px; background: #FAFBFD; border-radius: 8px; border: 1px solid var(--line); margin-top: 4px;">Trải nghiệm sự sum vầy gia đình ngày tết là insight cốt lõi của người Việt.</div>
+      </div>
+      <div style="margin-bottom: 14px;">
+        <div class="info-label">Concept</div>
+        <div style="padding: 10px; background: #FAFBFD; border-radius: 8px; border: 1px solid var(--line); margin-top: 4px;">Quảng cáo gia đình xúc động, truyền tải thông điệp yêu thương.</div>
+      </div>
+      <div style="margin-bottom: 14px;">
+        <div class="info-label">Nội dung chi tiết</div>
+        <div style="padding: 10px; background: #FAFBFD; border-radius: 8px; border: 1px solid var(--line); margin-top: 4px;">Kịch bản chi tiết truyền tải tình yêu gia đình, các cảnh quay sum họp ngày tết.</div>
+      </div>
+      <div style="margin-bottom: 14px;">
+        <div class="info-label">Script (Kịch bản)</div>
+        <div style="padding: 10px; background: #FAFBFD; border-radius: 8px; border: 1px solid var(--line); margin-top: 4px; font-family: monospace; white-space: pre-wrap;">Cảnh 1: Ông bà chuẩn bị đón con cháu về quê
+Cảnh 2: Cả nhà quây quần bên mâm cơm tết
+Cảnh 3: Góc camera người già nhìn con cháu mỉm cười
+Cảnh 4: Logo + tagline sản phẩm</div>
+      </div>
+
+      <div style="border-top: 1px solid var(--line); padding-top: 16px; margin-top: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="font-weight: 700; color: var(--navy);">Feedback &amp; Chỉnh sửa ý tưởng</div>
+          <button class="btn-mini" onclick="toggleEditMode()" id="toggleEditBtn" style="background-color: var(--indigo-50); color: var(--indigo-600); border: 1px solid var(--indigo-200);"><i class="ti ti-edit"></i> Chỉnh sửa nội dung</button>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label style="font-weight: 600; color: var(--ink-2);">Nhận xét / Feedback cho nhân viên</label>
+          <textarea id="directorFeedbackText" class="form-control" rows="3" placeholder="Nhập ý kiến chỉ đạo, yêu cầu chỉnh sửa ý tưởng..."></textarea>
+        </div>
+
+        <!-- EDIT SECTION (Hidden by default) -->
+        <div id="editSection" style="display: none; margin-top: 16px; padding: 16px; background: var(--amber-bg); border: 1px solid #F3D9A6; border-radius: 10px;">
+          <div style="font-weight: 700; color: var(--navy); margin-bottom: 12px;"><i class="ti ti-edit"></i> Chỉnh sửa nội dung ý tưởng</div>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label>Concept sáng tạo</label>
+            <input type="text" id="editConcept" class="form-control" value="Quảng cáo gia đình xúc động, truyền tải thông điệp yêu thương.">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label>Nội dung chi tiết</label>
+            <textarea id="editContent" class="form-control" rows="2">Kịch bản chi tiết truyền tải tình yêu gia đình, các cảnh quay sum họp ngày tết.</textarea>
+          </div>
+          <div class="form-group">
+            <label>Script (Kịch bản)</label>
+            <textarea id="editScript" class="form-control" rows="4">Cảnh 1: Ông bà chuẩn bị đón con cháu về quê
+Cảnh 2: Cả nhà quây quần bên mâm cơm tết
+Cảnh 3: Góc camera người già nhìn con cháu mỉm cười
+Cảnh 4: Logo + tagline sản phẩm</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="display: flex; justify-content: space-between; width: 100%;">
+      <button class="btn-mini" onclick="closeModal('ideaFeedbackModal')">Hủy</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-mini reject" onclick="sendIdeaFeedback()"><i class="ti ti-message-dots"></i> Gửi Feedback</button>
+        <button class="btn-mini approve" onclick="saveIdeaEdit()" id="saveEditBtn" style="display: none;"><i class="ti ti-device-floppy"></i> Lưu &amp; Gửi lại</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -182,6 +285,81 @@
       setTimeout(() => {
         row.remove();
       }, 300);
+    }
+  }
+
+  function handleSignAction(btn, campaign) {
+    const checkbox = document.getElementById('signCheckbox' + campaign);
+    if (!checkbox || !checkbox.checked) {
+      alert('Vui lòng tích chọn "Xác nhận ký" hợp đồng trước khi thực hiện ký.');
+      return;
+    }
+    if (confirm(`Bạn có chắc chắn muốn xác nhận ký hợp đồng cho chiến dịch "${campaign}"?`)) {
+      alert(`Đã ký hợp đồng cho chiến dịch "${campaign}" thành công! Hợp đồng chính thức có hiệu lực.`);
+      const row = btn.closest('tr');
+      row.style.transition = 'opacity 0.3s';
+      row.style.opacity = 0;
+      setTimeout(() => {
+        row.remove();
+      }, 300);
+    }
+  }
+
+  // Idea Feedback & Edit Functions
+  function openIdeaFeedbackModal() {
+    document.getElementById('ideaFeedbackModal').classList.add('active');
+    document.getElementById('editSection').style.display = 'none';
+    document.getElementById('saveEditBtn').style.display = 'none';
+    document.getElementById('toggleEditBtn').innerHTML = '<i class="ti ti-edit"></i> Chỉnh sửa nội dung';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+
+  function toggleEditMode() {
+    const editSection = document.getElementById('editSection');
+    const saveBtn = document.getElementById('saveEditBtn');
+    const toggleBtn = document.getElementById('toggleEditBtn');
+    
+    if (editSection.style.display === 'none') {
+      editSection.style.display = 'block';
+      saveBtn.style.display = 'inline-flex';
+      toggleBtn.innerHTML = '<i class="ti ti-eye"></i> Ẩn chỉnh sửa';
+      toggleBtn.style.backgroundColor = 'var(--red-50)';
+      toggleBtn.style.color = 'var(--red-600)';
+      toggleBtn.style.borderColor = 'var(--red-200)';
+    } else {
+      editSection.style.display = 'none';
+      saveBtn.style.display = 'none';
+      toggleBtn.innerHTML = '<i class="ti ti-edit"></i> Chỉnh sửa nội dung';
+      toggleBtn.style.backgroundColor = 'var(--indigo-50)';
+      toggleBtn.style.color = 'var(--indigo-600)';
+      toggleBtn.style.borderColor = 'var(--indigo-200)';
+    }
+  }
+
+  function sendIdeaFeedback() {
+    const feedback = document.getElementById('directorFeedbackText').value;
+    if (!feedback) {
+      alert('Vui lòng nhập nhận xét/feedback trước khi gửi.');
+      return;
+    }
+    if (confirm('Gửi feedback cho nhân viên để chỉnh sửa ý tưởng?')) {
+      alert('Đã gửi feedback thành công! Nhân viên sẽ nhận được thông báo và tiến hành chỉnh sửa ý tưởng.');
+      closeModal('ideaFeedbackModal');
+    }
+  }
+
+  function saveIdeaEdit() {
+    const feedback = document.getElementById('directorFeedbackText').value;
+    const concept = document.getElementById('editConcept').value;
+    const content = document.getElementById('editContent').value;
+    const script = document.getElementById('editScript').value;
+
+    if (confirm('Lưu chỉnh sửa ý tưởng và gửi lại cho nhân viên?')) {
+      alert('Đã lưu chỉnh sửa và gửi lại cho nhân viên thành công!');
+      closeModal('ideaFeedbackModal');
     }
   }
 </script>

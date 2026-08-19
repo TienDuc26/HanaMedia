@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HanaMedia — Ký hợp đồng (Giám đốc)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+  <link rel="stylesheet" href="~/css/design-system.css">
+  <link rel="stylesheet" href="~/css/layout.css">
+  <link rel="stylesheet" href="~/css/components.css">
+  <style>
+    .tab-headers {
+      display: flex;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+    }
+    .tab-header {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 6px 12px;
+      position: relative;
+    }
+    .tab-header.active {
+      color: var(--blue-500);
+    }
+    .tab-header.active::after {
+      content: '';
+      position: absolute;
+      bottom: -9px;
+      left: 0; right: 0;
+      height: 3px;
+      background: var(--blue-500);
+      border-radius: 2px 2px 0 0;
+    }
+    .contract-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: box-shadow 0.2s;
+    }
+    .contract-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .contract-card.signed {
+      border-left: 4px solid var(--green-500);
+      background: var(--green-bg);
+    }
+    .contract-card.pending {
+      border-left: 4px solid var(--amber-500);
+      background: var(--amber-bg);
+    }
+    .contract-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .contract-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .contract-client {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .contract-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .meta-item {
+      background: var(--blue-50);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+    .meta-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .meta-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+    .contract-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .sign-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">HM</div>
+      <div>
+        <div class="brand-name">HanaMedia</div>
+        <div class="brand-sub">Hệ thống Quản lý Nhân sự</div>
+      </div>
+    </div>
+
+    <div class="nav-section">Tổng quan</div>
+    <a href="/Director/Dashboard" class="nav-item"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+    <a href="/Director/Report" class="nav-item"><i class="ti ti-report-analytics"></i>Báo cáo</a>
+
+    <div class="nav-section">Nghiệp vụ</div>
+    <a href="/Director/HumanResources" class="nav-item"><i class="ti ti-users"></i>Nhân sự</a>
+    <a href="/Director/Department" class="nav-item"><i class="ti ti-building-skyscraper"></i>Phòng ban</a>
+    <a href="/Director/BookingCampaign" class="nav-item"><i class="ti ti-star"></i>Booking / KOL</a>
+    <a href="/Director/Idea" class="nav-item"><i class="ti ti-bulb"></i>Ý tưởng &amp; Chiến dịch</a>
+    <a href="/Director/Approve" class="nav-item"><i class="ti ti-checklist"></i>Phê duyệt</a>
+    <a href="/Director/SignContract" class="nav-item active"><i class="ti ti-file-signature"></i>Ký hợp đồng</a>
+
+    <div class="nav-section">Quản trị</div>
+    <a href="/Director/Config" class="nav-item"><i class="ti ti-settings"></i>Cấu hình nghiệp vụ</a>
+    <a href="/Director/MonitoringSystem" class="nav-item"><i class="ti ti-shield-check"></i>Giám sát hệ thống</a>
+
+    <div class="sidebar-footer">
+      <div class="role-pill">
+        <div class="avatar">NV</div>
+        <div>
+          <div class="role-name">Nguyễn Văn A</div>
+          <div class="role-title">Giám đốc</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Ký hợp đồng Booking</div>
+        <div class="page-sub">Xem xét và ký hợp đồng booking đã được duyệt từ các booking đã phê duyệt</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tab-headers">
+        <div class="tab-header active" onclick="switchFilter(event, 'pending')">Chờ ký (2)</div>
+        <div class="tab-header" onclick="switchFilter(event, 'signed')">Đã ký (3)</div>
+        <div class="tab-header" onclick="switchFilter(event, 'all')">Tất cả (5)</div>
+      </div>
+
+      <div id="contractList">
+        <!-- Pending Contracts -->
+        <div class="contract-card pending" data-status="pending">
+          <div class="contract-header">
+            <div>
+              <div class="contract-title">Hợp đồng Booking Milo — Năng lượng xanh</div>
+              <div class="contract-client">Client: Milo · KOL: Hoàng Gia B</div>
+            </div>
+            <span class="approval-tag" style="background-color: var(--amber-50); color: var(--amber-600); border: 1px solid var(--amber-200);">Chờ ký</span>
+          </div>
+          <div class="contract-meta">
+            <div class="meta-item">
+              <div class="meta-label">Giá trị Booking</div>
+              <div class="meta-value">18,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Chi phí thực tế</div>
+              <div class="meta-value">8,500,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Người soạn HĐ</div>
+              <div class="meta-value">Phạm Thu Hà</div>
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <a href="#" style="color: var(--blue-600); font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="ti ti-file-text"></i> hop_dong_milo_draft.pdf
+            </a>
+          </div>
+          <div class="contract-actions">
+            <div class="sign-section">
+              <label style="font-size: 13px; color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="signCheckbox1" onchange="toggleSignButton('signBtn1', 'signCheckbox1')" style="cursor: pointer; width: 16px; height: 16px;">
+                <span style="font-weight: 600;">Xác nhận đã kiểm tra nội dung hợp đồng</span>
+              </label>
+            </div>
+            <button class="btn-mini approve" id="signBtn1" onclick="signContract('Milo', 'Hoàng Gia B', 'signCheckbox1')" disabled style="opacity: 0.5; cursor: not-allowed;">
+              <i class="ti ti-signature"></i> Ký hợp đồng
+            </button>
+          </div>
+        </div>
+
+        <div class="contract-card pending" data-status="pending">
+          <div class="contract-header">
+            <div>
+              <div class="contract-title">Hợp đồng Booking Highland Coffee — Mùa tựu trường</div>
+              <div class="contract-client">Client: Highland Coffee · KOL: Trần Ngọc A</div>
+            </div>
+            <span class="approval-tag" style="background-color: var(--amber-50); color: var(--amber-600); border: 1px solid var(--amber-200);">Chờ ký</span>
+          </div>
+          <div class="contract-meta">
+            <div class="meta-item">
+              <div class="meta-label">Giá trị Booking</div>
+              <div class="meta-value">20,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Chi phí thực tế</div>
+              <div class="meta-value">9,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Người soạn HĐ</div>
+              <div class="meta-value">Nguyễn Anh Tuấn</div>
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <a href="#" style="color: var(--blue-600); font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="ti ti-file-text"></i> hop_dong_highland_draft.pdf
+            </a>
+          </div>
+          <div class="contract-actions">
+            <div class="sign-section">
+              <label style="font-size: 13px; color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="signCheckbox2" onchange="toggleSignButton('signBtn2', 'signCheckbox2')" style="cursor: pointer; width: 16px; height: 16px;">
+                <span style="font-weight: 600;">Xác nhận đã kiểm tra nội dung hợp đồng</span>
+              </label>
+            </div>
+            <button class="btn-mini approve" id="signBtn2" onclick="signContract('Highland Coffee', 'Trần Ngọc A', 'signCheckbox2')" disabled style="opacity: 0.5; cursor: not-allowed;">
+              <i class="ti ti-signature"></i> Ký hợp đồng
+            </button>
+          </div>
+        </div>
+
+        <!-- Signed Contracts -->
+        <div class="contract-card signed" data-status="signed">
+          <div class="contract-header">
+            <div>
+              <div class="contract-title">Hợp đồng Booking Vinamilk — Tết Sum Vầy 2027</div>
+              <div class="contract-client">Client: Vinamilk · KOL: Nguyễn Thị H</div>
+            </div>
+            <span class="approval-tag" style="background-color: var(--green-50); color: var(--green-600); border: 1px solid var(--green-200);">
+              <i class="ti ti-check"></i> Đã ký
+            </span>
+          </div>
+          <div class="contract-meta">
+            <div class="meta-item">
+              <div class="meta-label">Giá trị Booking</div>
+              <div class="meta-value">10,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Chi phí thực tế</div>
+              <div class="meta-value">4,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Ngày ký</div>
+              <div class="meta-value">18/08/2026</div>
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <a href="#" style="color: var(--blue-600); font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="ti ti-file-text"></i> hop_dong_vinamilk_signed.pdf
+            </a>
+            <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">· Hợp đồng chính thức có hiệu lực</span>
+          </div>
+          <div class="contract-actions">
+            <div style="color: var(--muted); font-size: 12px;">
+              <i class="ti ti-user-check"></i> Đã ký bởi Giám đốc (Nguyễn Văn A)
+            </div>
+            <div>
+              <button class="btn-mini" onclick="alert('Đang tải hợp đồng...')"><i class="ti ti-download"></i> Tải file</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="contract-card signed" data-status="signed">
+          <div class="contract-header">
+            <div>
+              <div class="contract-title">Hợp đồng Booking Traveloka — Mùa Hè Rực Rỡ</div>
+              <div class="contract-client">Client: Traveloka · KOC: Trần Văn K</div>
+            </div>
+            <span class="approval-tag" style="background-color: var(--green-50); color: var(--green-600); border: 1px solid var(--green-200);">
+              <i class="ti ti-check"></i> Đã ký
+            </span>
+          </div>
+          <div class="contract-meta">
+            <div class="meta-item">
+              <div class="meta-label">Giá trị Booking</div>
+              <div class="meta-value">25,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Chi phí thực tế</div>
+              <div class="meta-value">11,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Ngày ký</div>
+              <div class="meta-value">15/08/2026</div>
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <a href="#" style="color: var(--blue-600); font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="ti ti-file-text"></i> hop_dong_traveloka_signed.pdf
+            </a>
+            <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">· Hợp đồng chính thức có hiệu lực</span>
+          </div>
+          <div class="contract-actions">
+            <div style="color: var(--muted); font-size: 12px;">
+              <i class="ti ti-user-check"></i> Đã ký bởi Giám đốc (Nguyễn Văn A)
+            </div>
+            <div>
+              <button class="btn-mini" onclick="alert('Đang tải hợp đồng...')"><i class="ti ti-download"></i> Tải file</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="contract-card signed" data-status="signed">
+          <div class="contract-header">
+            <div>
+              <div class="contract-title">Hợp đồng Booking Cocoon — Glow Up Your Skin</div>
+              <div class="contract-client">Client: Cocoon · KOL: Nguyễn Anh T</div>
+            </div>
+            <span class="approval-tag" style="background-color: var(--green-50); color: var(--green-600); border: 1px solid var(--green-200);">
+              <i class="ti ti-check"></i> Đã ký
+            </span>
+          </div>
+          <div class="contract-meta">
+            <div class="meta-item">
+              <div class="meta-label">Giá trị Booking</div>
+              <div class="meta-value">15,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Chi phí thực tế</div>
+              <div class="meta-value">6,000,000 đ</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Ngày ký</div>
+              <div class="meta-value">10/08/2026</div>
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <a href="#" style="color: var(--blue-600); font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="ti ti-file-text"></i> hop_dong_cocoon_signed.pdf
+            </a>
+            <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">· Hợp đồng chính thức có hiệu lực</span>
+          </div>
+          <div class="contract-actions">
+            <div style="color: var(--muted); font-size: 12px;">
+              <i class="ti ti-user-check"></i> Đã ký bởi Giám đốc (Nguyễn Văn A)
+            </div>
+            <div>
+              <button class="btn-mini" onclick="alert('Đang tải hợp đồng...')"><i class="ti ti-download"></i> Tải file</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>HanaMedia · Dashboard Giám đốc — dữ liệu minh họa cho mục đích thiết kế giao diện</footer>
+  </main>
+</div>
+
+<script>
+  function switchFilter(e, type) {
+    const headers = e.target.parentElement.children;
+    for(let h of headers) {
+      h.classList.remove('active');
+    }
+    e.target.classList.add('active');
+
+    const cards = document.querySelectorAll('.contract-card');
+    cards.forEach(card => {
+      if(type === 'all' || card.getAttribute('data-status') === type) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function toggleSignButton(btnId, checkboxId) {
+    const checkbox = document.getElementById(checkboxId);
+    const btn = document.getElementById(btnId);
+    
+    if (checkbox.checked) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    } else {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'not-allowed';
+    }
+  }
+
+  function signContract(client, kol, checkboxId) {
+    const checkbox = document.getElementById(checkboxId);
+    if (!checkbox || !checkbox.checked) {
+      alert('Vui lòng tích chọn "Xác nhận đã kiểm tra nội dung hợp đồng" trước khi ký.');
+      return;
+    }
+    
+    if (confirm(`Xác nhận ký hợp đồng cho Booking "${client}" với KOL "${kol}"?\n\nHợp đồng sẽ chính thức có hiệu lực sau khi ký.`)) {
+      alert(`Đã ký hợp đồng cho "${client}" thành công!\n\nHợp đồng chính thức có hiệu lực và được ghi lại trong Audit log.`);
+      window.location.reload();
+    }
+  }
+</script>
+</body>
+</html>

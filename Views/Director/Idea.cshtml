@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -41,6 +41,7 @@
     <a href="/Director/BookingCampaign" class="nav-item"><i class="ti ti-star"></i>Booking / KOL</a>
     <a href="/Director/Idea" class="nav-item active"><i class="ti ti-bulb"></i>Ý tưởng &amp; Chiến dịch</a>
     <a href="/Director/Approve" class="nav-item"><i class="ti ti-checklist"></i>Phê duyệt</a>
+    <a href="/Director/SignContract" class="nav-item"><i class="ti ti-file-signature"></i>Ký hợp đồng</a>
 
     <div class="nav-section">Quản trị</div>
     <a href="/Director/Config" class="nav-item"><i class="ti ti-settings"></i>Cấu hình nghiệp vụ</a>
@@ -88,7 +89,7 @@
             <td>Trần Thanh Hải (QL)</td>
             <td><span class="status-chip status-good">Đang triển khai</span></td>
             <td style="text-align: right;">
-              <button class="btn-mini" onclick="openIdeaModal('Chiến dịch Tết Sum Vầy 2027', 'Trần Thanh Hải', 'Vinamilk', 'Tết Sum Vầy 2027', 'Trải nghiệm sự sum vầy gia đình ngày tết', 'Quảng cáo gia đình xúc động', 'Kịch bản chi tiết truyền tải tình yêu gia đình', 'http://ref.example.com', 'Hình ảnh gia đình đầm ấm', 'Kịch bản truyền hình 30s', '20/12/2026', 'Phạm Thu Hà', 'Trần Thanh Hải', 'Đang triển khai')">Chi tiết</button>
+              <button class="btn-mini" onclick="openIdeaModal('Chiến dịch Tết Sum Vầy 2027', 'Trần Thanh Hải', 'Vinamilk', 'Tết Sum Vầy 2027', 'Trải nghiệm sự sum vầy gia đình ngày tết', 'Quảng cáo gia đình xúc động', 'Kịch bản chi tiết truyền tải tình yêu gia đình', 'http://ref.example.com', 'Hình ảnh gia đình đầm ấm', 'Kịch bản truyền hình 30s', '20/12/2026', 'Phạm Thu Hà', 'Trần Thanh Hải', 'Đang triển khai', this)">Chi tiết</button>
             </td>
           </tr>
           <tr>
@@ -98,7 +99,7 @@
             <td>Trần Thanh Hải (QL)</td>
             <td><span class="status-chip status-warn">Review</span></td>
             <td style="text-align: right;">
-              <button class="btn-mini" onclick="openIdeaModal('Hành trình Xanh cùng Cocoon', 'Đỗ Minh Khôi', 'Cocoon', 'Glow Up Your Skin', 'Người dùng quan tâm đến sản phẩm thuần chay', 'Chiến dịch xanh bảo vệ môi trường', 'KOL quay video unbox sản phẩm xanh', 'http://ref.cocoon.com', 'Tông màu xanh lá bảo vệ thiên nhiên', 'Kịch bản TikTok/Reels 60s', '15/09/2026', 'Đỗ Minh Khôi', 'Trần Thanh Hải', 'Review')">Chi tiết</button>
+              <button class="btn-mini" onclick="openIdeaModal('Hành trình Xanh cùng Cocoon', 'Đỗ Minh Khôi', 'Cocoon', 'Glow Up Your Skin', 'Người dùng quan tâm đến sản phẩm thuần chay', 'Chiến dịch xanh bảo vệ môi trường', 'KOL quay video unbox sản phẩm xanh', 'http://ref.cocoon.com', 'Tông màu xanh lá bảo vệ thiên nhiên', 'Kịch bản TikTok/Reels 60s', '15/09/2026', 'Đỗ Minh Khôi', 'Trần Thanh Hải', 'Review', this)">Chi tiết</button>
             </td>
           </tr>
         </tbody>
@@ -177,15 +178,30 @@
         <div class="info-label">Script (Kịch bản)</div>
         <div class="info-val" id="ideaScript" style="margin-top: 4px; padding: 10px; background: #FAFBFD; border-radius: 8px; border: 1px solid var(--line); font-family: monospace;">-</div>
       </div>
+
+      <!-- View Only Note -->
+      <div style="border-top:1px solid var(--line); padding-top:14px; margin-top:16px; background: var(--amber-50); padding: 12px; border-radius: 8px; border: 1px solid var(--amber-200);">
+        <div style="display: flex; align-items: center; gap: 8px; color: var(--amber-700); font-weight: 600;">
+          <i class="ti ti-info-circle"></i>
+          Chỉnh sửa &amp; Feedback ý tưởng
+        </div>
+        <div style="margin-top: 6px; font-size: 13px; color: var(--amber-700);">
+          Để chỉnh sửa hoặc gửi feedback cho nhân viên, vui lòng vào <a href="/Director/Approve" style="color: var(--blue-600); font-weight: 600;">mục Phê duyệt</a>.
+        </div>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-mini approve" onclick="closeModal('ideaModal')">Đóng</button>
+    <div class="modal-footer" style="display:flex; justify-content:flex-end; width:100%;">
+      <button class="btn-mini" onclick="closeModal('ideaModal')">Đóng</button>
     </div>
   </div>
 </div>
 
 <script>
-  function openIdeaModal(name, creator, client, campaign, insight, concept, content, ref, moodboard, script, deadline, staff, reviewer, status) {
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+
+  function openIdeaModal(name, creator, client, campaign, insight, concept, content, ref, moodboard, script, deadline, staff, reviewer, status, btn) {
     document.getElementById('ideaName').innerText = name;
     document.getElementById('ideaCreator').innerText = creator;
     document.getElementById('ideaClientCampaign').innerText = `${client} — ${campaign}`;
@@ -201,17 +217,13 @@
     document.getElementById('ideaStatus').innerText = status;
 
     const statusChip = document.getElementById('ideaStatus');
-    if (status === 'Review') {
+    if (status === 'Review' || status === 'Need Revision') {
       statusChip.className = 'status-chip status-warn';
     } else {
       statusChip.className = 'status-chip status-good';
     }
 
     document.getElementById('ideaModal').classList.add('active');
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
   }
 </script>
 </body>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -34,6 +34,7 @@
     <a href="/Director/BookingCampaign" class="nav-item active"><i class="ti ti-star"></i>Booking / KOL</a>
     <a href="/Director/Idea" class="nav-item"><i class="ti ti-bulb"></i>Ý tưởng &amp; Chiến dịch</a>
     <a href="/Director/Approve" class="nav-item"><i class="ti ti-checklist"></i>Phê duyệt</a>
+    <a href="/Director/SignContract" class="nav-item"><i class="ti ti-file-signature"></i>Ký hợp đồng</a>
 
     <div class="nav-section">Quản trị</div>
     <a href="/Director/Config" class="nav-item"><i class="ti ti-settings"></i>Cấu hình nghiệp vụ</a>
@@ -116,12 +117,45 @@
         </thead>
         <tbody>
           <tr>
+            <td><strong>Cocoon — Glow Up Your Skin</strong></td>
+            <td>Nguyễn Anh T (KOL)</td>
+            <td>15,000,000 đ</td>
+            <td>6,000,000 đ</td>
+            <td>Phạm Thu Hà</td>
+            <td><span class="status-chip status-warn">Chờ duyệt booking</span></td>
+            <td style="text-align: right;">
+              <button class="btn-mini" onclick="openSalaryModal('Nguyễn Anh T', 15000000, [])">Xem chi tiết</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Highland Coffee — Mùa tựu trường</strong></td>
+            <td>Trần Ngọc A (KOL)</td>
+            <td>20,000,000 đ</td>
+            <td>0 đ</td>
+            <td>Nguyễn Anh Tuấn</td>
+            <td><span class="status-chip status-warn">Đã duyệt (chờ soạn HĐ)</span></td>
+            <td style="text-align: right;">
+              <button class="btn-mini" onclick="openSalaryModal('Trần Ngọc A', 20000000, [])">Xem chi tiết</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Milo — Năng lượng xanh</strong></td>
+            <td>Hoàng Gia B (KOL)</td>
+            <td>18,000,000 đ</td>
+            <td>0 đ</td>
+            <td>Phạm Thu Hà</td>
+            <td><span class="status-chip status-info">Chờ Giám đốc ký hợp đồng</span></td>
+            <td style="text-align: right;">
+              <button class="btn-mini" onclick="openSalaryModal('Hoàng Gia B', 18000000, [])">Xem chi tiết</button>
+            </td>
+          </tr>
+          <tr>
             <td><strong>Vinamilk — Tết Sum Vầy 2027</strong></td>
             <td>Nguyễn Thị H (KOL)</td>
             <td>10,000,000 đ</td>
             <td>4,000,000 đ</td>
             <td>Phạm Thu Hà</td>
-            <td><span class="status-chip status-good">Đang chạy</span></td>
+            <td><span class="status-chip status-good">Đã ký (hiệu lực)</span></td>
             <td style="text-align: right;">
               <button class="btn-mini" onclick="openSalaryModal('Nguyễn Thị H', 10000000, [{'name': 'Phạm Thu Hà', 'val': 3000000}, {'name': 'Đỗ Minh Khôi', 'val': 3000000}, {'name': 'Lê Văn C', 'val': 4000000}])">Xem chi tiết</button>
             </td>

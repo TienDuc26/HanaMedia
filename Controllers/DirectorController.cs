@@ -48,5 +48,10 @@ namespace HanaMedia.Controllers
         {
             return View();
         }
+
+        public IActionResult SignContract()
+        {
+            return View();
+        }
     }
 }

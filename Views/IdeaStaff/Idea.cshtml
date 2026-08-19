@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -83,6 +83,16 @@
         </thead>
         <tbody>
           <tr>
+            <td><strong>Milo — Năng lượng xanh</strong></td>
+            <td>Milo — Năng lượng xanh</td>
+            <td>10/10/2026</td>
+            <td>Giám đốc (Nguyễn Văn A)</td>
+            <td><span class="status-chip status-bad">Need Revision (Sửa lại)</span></td>
+            <td style="text-align: right;">
+              <button class="btn-mini approve" onclick="openEditModal('Milo — Năng lượng xanh', 'Milo', 'Năng lượng xanh', 'Trẻ em thích hoạt động ngoài trời', 'Năng lượng bền bỉ cho ngày dài', 'KOC nhí chơi bóng rổ và uống Milo', 'http://ref.milo.com', 'Năng động thể thao màu xanh lá mạ', 'Kịch bản phân cảnh thể thao nhí', 'Need Revision', 'Phản hồi từ Giám đốc (Nguyễn Văn A): Script cần sôi động hơn, bổ sung thêm cảnh KOC uống Milo sau khi chơi thể thao.')">Chỉnh sửa &amp; Gửi lại</button>
+            </td>
+          </tr>
+          <tr>
             <td><strong>Hành trình Xanh cùng Cocoon</strong></td>
             <td>Cocoon — Glow Up Your Skin</td>
             <td>15/09/2026</td>
@@ -99,7 +109,7 @@
             <td>Trần Thanh Hải (QL)</td>
             <td><span class="status-chip status-bad">Need Revision (Sửa lại)</span></td>
             <td style="text-align: right;">
-              <button class="btn-mini approve" onclick="openEditModal('Sữa hạt Dinh Dưỡng Mỗi Ngày', 'Vinamilk', 'Tết Sum Vầy 2027', 'Gia đình quan tâm sức khỏe', 'Sữa hạt dinh dưỡng cho người già', 'Ý tưởng tặng quà tết ý nghĩa cho ông bà', 'http://ref.vinamilk.com', 'Màu xanh lục ấm cúng', 'Kịch bản clip ngắn 30s cho Facebook Reels', 'Need Revision', 'Phản hồi từ Trần Thanh Hải: Cần viết chi tiết hơn phần hội thoại của ông bà ở giây thứ 15.')">Chỉnh sửa &amp; Nộp</button>
+              <button class="btn-mini approve" onclick="openEditModal('Sữa hạt Dinh Dưỡng Mỗi Ngày', 'Vinamilk', 'Tết Sum Vầy 2027', 'Gia đình quan tâm sức khỏe', 'Sữa hạt dinh dưỡng cho người già', 'Ý tưởng tặng quà tết ý nghĩa cho ông bà', 'http://ref.vinamilk.com', 'Màu xanh lục ấm cúng', 'Kịch bản clip ngắn 30s cho Facebook Reels', 'Need Revision', 'Phản hồi từ Quản lý Ý tưởng (Trần Thanh Hải): Cần viết chi tiết hơn phần hội thoại của ông bà ở giây thứ 15.')">Chỉnh sửa &amp; Nộp</button>
             </td>
           </tr>
         </tbody>
@@ -240,12 +250,14 @@
     </div>
     <div class="modal-footer">
       <button class="btn-mini" onclick="closeModal('editIdeaModal')">Hủy</button>
-      <button class="btn-mini approve" onclick="alert('Đã cập nhật thay đổi và gửi lên hàng chờ Review của Quản lý!'); closeModal('editIdeaModal');">Cập nhật &amp; Gửi duyệt</button>
+      <button class="btn-mini approve" id="submitIdeaBtn" onclick="submitUpdatedIdea()">Cập nhật &amp; Gửi duyệt</button>
     </div>
   </div>
 </div>
 
 <script>
+  let activeFeedback = '';
+
   function openModal(id) {
     document.getElementById(id).classList.add('active');
   }
@@ -266,15 +278,41 @@
     document.getElementById('editScript').value = script;
     document.getElementById('editStatus').value = status === 'Need Revision' ? 'In Progress' : status;
 
+    activeFeedback = feedback || '';
+
     const feedBox = document.getElementById('feedbackBox');
+    const submitBtn = document.getElementById('submitIdeaBtn');
     if(feedback) {
       document.getElementById('feedbackText').innerText = feedback;
+      if (feedback.includes('Giám đốc')) {
+        feedBox.style.backgroundColor = '#FFF0F2';
+        feedBox.style.borderColor = '#F8D7DA';
+        feedBox.querySelector('.alert-title').innerText = 'Phản hồi từ Giám đốc';
+        feedBox.querySelector('.alert-title').style.color = '#721C24';
+        submitBtn.innerText = 'Cập nhật & Gửi lại cho Giám đốc';
+      } else {
+        feedBox.style.backgroundColor = 'var(--amber-bg)';
+        feedBox.style.borderColor = '#F3D9A6';
+        feedBox.querySelector('.alert-title').innerText = 'Phản hồi từ Quản lý Ý tưởng';
+        feedBox.querySelector('.alert-title').style.color = '#856404';
+        submitBtn.innerText = 'Cập nhật & Gửi duyệt (Quản lý)';
+      }
       feedBox.style.display = 'flex';
     } else {
       feedBox.style.display = 'none';
+      submitBtn.innerText = 'Cập nhật & Gửi duyệt';
     }
 
     openModal('editIdeaModal');
+  }
+
+  function submitUpdatedIdea() {
+    if (activeFeedback.includes('Giám đốc')) {
+      alert('Đã cập nhật thay đổi thành công và gửi lại trực tiếp cho Giám đốc duyệt!');
+    } else {
+      alert('Đã cập nhật thay đổi thành công và gửi lên hàng chờ Review của Quản lý!');
+    }
+    closeModal('editIdeaModal');
   }
 </script>
 </body>

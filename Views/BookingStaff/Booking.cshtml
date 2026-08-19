@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -44,7 +44,7 @@
     <div class="topbar">
       <div>
         <div class="page-title">Nhiệm vụ Booking &amp; Thù lao cá nhân</div>
-        <div class="page-sub">Theo dõi deadline, cập nhật link nghiệm thu bài viết và kiểm tra thù lao được chia cho từng chiến dịch</div>
+        <div class="page-sub">Theo dõi deadline, gửi duyệt booking, soạn hợp đồng gửi Giám đốc ký và xem thù lao cá nhân</div>
       </div>
     </div>
 
@@ -60,19 +60,52 @@
             <th>KOL/KOC phụ trách</th>
             <th>Thời hạn (Deadline)</th>
             <th>Thù lao của tôi (Read-only)</th>
-            <th>Link bài đăng bài đăng</th>
+            <th>Link bài đăng</th>
             <th>Trạng thái</th>
-            <th style="text-align: right;">Cập nhật kết quả</th>
+            <th style="text-align: right;">Hành động nghiệp vụ</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="bookingTableBody">
+          <tr>
+            <td><strong>Cocoon</strong><br><span style="color:var(--muted); font-size:12px;">Glow Up Your Skin</span></td>
+            <td>Nguyễn Anh T</td>
+            <td>10/10/2026</td>
+            <td style="color:var(--blue-700); font-weight:700;">2,500,000 đ</td>
+            <td>-</td>
+            <td><span class="status-chip status-warn">Đang chờ</span></td>
+            <td style="text-align: right;">
+              <button class="btn-mini approve" onclick="sendApprovalRequest(this, 'Cocoon')"><i class="ti ti-send"></i> Gửi duyệt Booking</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Highland Coffee</strong><br><span style="color:var(--muted); font-size:12px;">Mùa tựu trường</span></td>
+            <td>Trần Ngọc A</td>
+            <td>15/09/2026</td>
+            <td style="color:var(--blue-700); font-weight:700;">4,000,000 đ</td>
+            <td>-</td>
+            <td><span class="status-chip status-warn">Đã duyệt (chờ soạn HĐ)</span></td>
+            <td style="text-align: right;">
+              <button class="btn-mini approve" onclick="openDraftContractModal('Highland Coffee')"><i class="ti ti-file-pencil"></i> Soạn hợp đồng</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Milo</strong><br><span style="color:var(--muted); font-size:12px;">Năng lượng xanh</span></td>
+            <td>Hoàng Gia B</td>
+            <td>30/09/2026</td>
+            <td style="color:var(--blue-700); font-weight:700;">3,500,000 đ</td>
+            <td>-</td>
+            <td><span class="status-chip status-info">Chờ Giám đốc ký hợp đồng</span></td>
+            <td style="text-align: right;">
+              <span style="font-size:12px; color:var(--muted);">Chờ Giám đốc ký...</span>
+            </td>
+          </tr>
           <tr>
             <td><strong>Vinamilk</strong><br><span style="color:var(--muted); font-size:12px;">Tết Sum Vầy 2027</span></td>
             <td>Nguyễn Thị H</td>
             <td>15/01/2027</td>
             <td style="color:var(--blue-700); font-weight:700;">3,000,000 đ</td>
             <td><a href="#" target="_blank" style="color:var(--blue-600);"><i class="ti ti-link"></i> http://link.tiktok.com/123</a></td>
-            <td><span class="status-chip status-good">Đang chạy</span></td>
+            <td><span class="status-chip status-good">Đã ký (hiệu lực)</span></td>
             <td style="text-align: right;">
               <button class="btn-mini approve" onclick="openUploadModal('Vinamilk — Tết Sum Vầy', '3,000,000 đ', 'http://link.tiktok.com/123')">Nghiệm thu</button>
             </td>
@@ -132,7 +165,44 @@
   </div>
 </div>
 
+<!-- MODAL SOẠN HỢP ĐỒNG -->
+<div class="modal-backdrop" id="draftContractModal">
+  <div class="modal-card" style="width: 550px;">
+    <div class="modal-header">
+      <div class="modal-title">Soạn thảo hợp đồng Booking</div>
+      <button class="modal-close" onclick="closeModal('draftContractModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Chiến dịch / Booking</label>
+        <input type="text" id="contractCampaign" class="form-control" readonly style="background:var(--blue-50);">
+      </div>
+      <div class="form-group">
+        <label>Chọn biểu mẫu hợp đồng</label>
+        <select class="form-control">
+          <option>Biểu mẫu Hợp đồng KOL/KOC tiêu chuẩn v2026</option>
+          <option>Biểu mẫu Hợp tác quảng cáo thương mại ngắn hạn</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Điều khoản bổ sung</label>
+        <textarea class="form-control" rows="3" placeholder="Nhập các điều khoản thương lượng riêng biệt với KOL/KOC..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Bản thảo hợp đồng (.pdf, .docx)</label>
+        <input type="file" class="form-control">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-mini" onclick="closeModal('draftContractModal')">Hủy</button>
+      <button class="btn-mini approve" onclick="submitContract()">Gửi hợp đồng cho Giám đốc ký</button>
+    </div>
+  </div>
+</div>
+
 <script>
+  let currentContractCampaignRow = null;
+
   function openModal(id) {
     document.getElementById(id).classList.add('active');
   }
@@ -146,6 +216,40 @@
     document.getElementById('upSalary').value = salary;
     document.getElementById('upLink').value = link;
     openModal('uploadModal');
+  }
+
+  function sendApprovalRequest(btn, campaignName) {
+    if (confirm(`Bạn có chắc chắn muốn gửi đơn phê duyệt Booking cho chiến dịch "${campaignName}" lên Giám đốc?`)) {
+      alert(`Đã gửi đơn phê duyệt booking "${campaignName}" lên Giám đốc thành công!`);
+      const row = btn.closest('tr');
+      const statusChip = row.querySelector('.status-chip');
+      statusChip.className = 'status-chip status-info';
+      statusChip.innerText = 'Chờ duyệt booking';
+      btn.parentElement.innerHTML = '<span style="font-size:12px; color:var(--muted);">Đang chờ duyệt...</span>';
+    }
+  }
+
+  function openDraftContractModal(campaignName) {
+    document.getElementById('contractCampaign').value = campaignName;
+    const rows = document.getElementById('bookingTableBody').getElementsByTagName('tr');
+    for (let r of rows) {
+      if (r.cells[0].innerText.includes(campaignName)) {
+        currentContractCampaignRow = r;
+        break;
+      }
+    }
+    openModal('draftContractModal');
+  }
+
+  function submitContract() {
+    alert('Đã gửi hợp đồng lên Giám đốc thành công! Đang chờ Giám đốc ký.');
+    if (currentContractCampaignRow) {
+      const statusChip = currentContractCampaignRow.querySelector('.status-chip');
+      statusChip.className = 'status-chip status-info';
+      statusChip.innerText = 'Chờ Giám đốc ký hợp đồng';
+      currentContractCampaignRow.cells[6].innerHTML = '<span style="font-size:12px; color:var(--muted);">Chờ Giám đốc ký...</span>';
+    }
+    closeModal('draftContractModal');
   }
 </script>
 </body>
