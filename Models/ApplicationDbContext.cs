@@ -476,9 +476,14 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("role");
+            entity.Property(e => e.SecurityStamp)
+                .HasDefaultValueSql("(newid())")
+                .IsConcurrencyToken()
+                .HasColumnName("security_stamp");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .IsUnicode(false)
+                .IsRequired()
                 .HasDefaultValue("active")
                 .HasColumnName("status");
             entity.Property(e => e.UpdatedAt)

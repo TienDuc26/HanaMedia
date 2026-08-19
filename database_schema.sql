@@ -1,3 +1,14 @@
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+SET ANSI_NULLS ON;
+SET ANSI_PADDING ON;
+SET ANSI_WARNINGS ON;
+SET ARITHABORT ON;
+SET CONCAT_NULL_YIELDS_NULL ON;
+SET QUOTED_IDENTIFIER ON;
+SET NUMERIC_ROUNDABORT OFF;
+GO
+
 -- =========================================================================
 -- MS SQL SERVER (MSSQL) DATABASE SCHEMA - HANAMEDIA
 -- =========================================================================
@@ -9,7 +20,8 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL CONSTRAINT chk_user_role CHECK (role IN ('giam_doc', 'admin_it', 'ql_hcns', 'nv_hcns', 'ql_booking', 'nv_booking', 'ql_y_tuong', 'nv_y_tuong')),
-    status VARCHAR(20) DEFAULT 'active' CONSTRAINT chk_user_status CHECK (status IN ('active', 'locked')),
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CONSTRAINT chk_user_status CHECK (status IN ('active', 'locked')),
+    security_stamp UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_users_security_stamp DEFAULT (NEWID()),
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE()
 );
@@ -174,26 +186,42 @@ GO
 -- OPTIMIZATION INDEXES
 -- =========================================================================
 CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_status_role ON users(status, role) INCLUDE(username, email);
 CREATE INDEX idx_employees_dept ON employees(department);
 CREATE INDEX idx_kols_platform ON kols(platform);
 CREATE INDEX idx_kols_status ON kols(status);
 CREATE INDEX idx_bookings_status ON bookings(status);
 CREATE INDEX idx_ideas_status ON ideas(status);
 CREATE INDEX idx_audit_logs_created ON system_audit_logs(created_at);
+CREATE INDEX idx_audit_logs_login_history ON system_audit_logs(user_id, created_at DESC)
+    INCLUDE(action_type, ip_address, device_info)
+    WHERE module = 'Tai_Khoan' AND user_id IS NOT NULL;
 GO
 
 -- =========================================================================
 -- INSERT TEST USERS (Password for all: password123)
 -- =========================================================================
--- password_hash is SHA256 of 'password123': ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc
+-- password_hash is SHA256 of 'password123': ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f
 -- =========================================================================
 INSERT INTO users (username, email, password_hash, role, status) VALUES
-('giam_doc', 'giamdoc@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'giam_doc', 'active'),
-('admin_it', 'adminit@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'admin_it', 'active'),
-('ql_hcns', 'qlhcns@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'ql_hcns', 'active'),
-('nv_hcns', 'nvhcns@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'nv_hcns', 'active'),
-('ql_booking', 'qlbooking@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'ql_booking', 'active'),
-('nv_booking', 'nvbooking@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'nv_booking', 'active'),
-('ql_y_tuong', 'qlytuong@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'ql_y_tuong', 'active'),
-('nv_y_tuong', 'nvytuong@hanamedia.com', 'ef92b778bafe421e48a550b0915f1116abd124136458f00dbd8551c69a7a93bc', 'nv_y_tuong', 'active');
+('giam_doc', 'giamdoc@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'giam_doc', 'active'),
+('admin_it', 'adminit@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin_it', 'active'),
+('ql_hcns', 'qlhcns@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'ql_hcns', 'active'),
+('nv_hcns', 'nvhcns@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'nv_hcns', 'active'),
+('ql_booking', 'qlbooking@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'ql_booking', 'active'),
+('nv_booking', 'nvbooking@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'nv_booking', 'active'),
+('ql_y_tuong', 'qlytuong@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'ql_y_tuong', 'active'),
+('nv_y_tuong', 'nvytuong@hanamedia.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'nv_y_tuong', 'active');
+GO
+
+-- =========================================================================
+-- INSERT DEVELOPMENT EMPLOYEE AVAILABLE FOR ACCOUNT PROVISIONING
+-- =========================================================================
+INSERT INTO employees
+    (full_name, dob, phone, email, address, joined_date, department, position,
+     contract_type, basic_salary, allowance, status)
+VALUES
+    (N'Nguyễn Minh Anh', '1998-05-12', '0900000001', 'minhanh@hanamedia.com',
+     N'Hà Nội', '2026-08-01', 'Y_tuong', N'Nhân viên Ý tưởng',
+     'thu_viec', 12000000, 1000000, 'dang_lam_viec');
 GO
