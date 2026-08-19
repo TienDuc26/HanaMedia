@@ -15,6 +15,9 @@ namespace HanaMedia.Controllers;
 public sealed class AccountController : Controller
 {
     private const string InvalidCredentialsMessage = "Tên đăng nhập hoặc mật khẩu không chính xác.";
+    private const string LockoutMessage = "Tài khoản đã bị tạm khóa do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau.";
+    private const int MaxFailedAccessAttempts = 5;
+    private static readonly TimeSpan DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 
     private readonly ApplicationDbContext _context;
     private readonly IAccountPasswordService _passwordService;
@@ -39,6 +42,13 @@ public sealed class AccountController : Controller
         if (User.Identity?.IsAuthenticated == true)
         {
             return RedirectToDashboard(User.FindFirstValue(ClaimTypes.Role));
+        }
+
+        if (HttpContext.Items.TryGetValue("NetworkDenied", out var denied)
+            && denied is bool deniedFlag
+            && deniedFlag)
+        {
+            ViewBag.NetworkError = "Vui lòng chuyển sang mạng cục bộ của công ty để đăng nhập.";
         }
 
         return View();
@@ -116,8 +126,31 @@ public sealed class AccountController : Controller
                 "login_failed",
                 $"Sai mật khẩu tài khoản {matchedUsername}.",
                 cancellationToken);
+            await RecordFailedAttemptAsync(matchedUserId, matchedUsername, cancellationToken);
             ViewBag.Error = InvalidCredentialsMessage;
             return View();
+        }
+
+        if (await IsLockedOutAsync(user, cancellationToken))
+        {
+            await TryWriteAuditAsync(
+                user.Id,
+                "login_blocked_locked",
+                $"Login blocked — account locked until {user.LockoutEndUtc:O} (UTC)",
+                cancellationToken);
+            ViewBag.Error = LockoutMessage;
+            return View();
+        }
+
+        if (ResetLockoutState(user))
+        {
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception) when (!cancellationToken.IsCancellationRequested)
+            {
+            }
         }
 
         var claims = new List<Claim>
@@ -272,4 +305,75 @@ public sealed class AccountController : Controller
 
     private static string Truncate(string value, int maxLength)
         => value.Length <= maxLength ? value : value[..maxLength];
+
+    private async Task<bool> IsLockedOutAsync(User user, CancellationToken cancellationToken)
+    {
+        if (!user.LockoutEndUtc.HasValue)
+        {
+            return false;
+        }
+
+        if (user.LockoutEndUtc.Value > DateTime.UtcNow)
+        {
+            return true;
+        }
+
+        user.LockoutEndUtc = null;
+        user.AccessFailedCount = 0;
+        return false;
+    }
+
+    private static bool ResetLockoutState(User user)
+    {
+        if (user.AccessFailedCount == 0 && !user.LockoutEndUtc.HasValue)
+        {
+            return false;
+        }
+
+        user.AccessFailedCount = 0;
+        user.LockoutEndUtc = null;
+        return true;
+    }
+
+    private async Task RecordFailedAttemptAsync(int userId, string username, CancellationToken cancellationToken)
+    {
+        User? user;
+        try
+        {
+            user = await _context.Users.FirstOrDefaultAsync(
+                account => account.Id == userId,
+                cancellationToken);
+        }
+        catch (Exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        if (user is null)
+        {
+            return;
+        }
+
+        user.AccessFailedCount += 1;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        if (user.AccessFailedCount >= MaxFailedAccessAttempts)
+        {
+            user.LockoutEndUtc = DateTime.UtcNow.Add(DefaultLockoutTimeSpan);
+
+            await TryWriteAuditAsync(
+                user.Id,
+                "account_locked",
+                $"Tài khoản {username} bị khóa sau {user.AccessFailedCount} lần đăng nhập sai cho đến {user.LockoutEndUtc:O} (UTC).",
+                cancellationToken);
+        }
+
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception) when (!cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
 }

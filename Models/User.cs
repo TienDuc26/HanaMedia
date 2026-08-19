@@ -19,6 +19,10 @@ public partial class User
 
     public Guid SecurityStamp { get; set; }
 
+    public int AccessFailedCount { get; set; }
+
+    public DateTime? LockoutEndUtc { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
